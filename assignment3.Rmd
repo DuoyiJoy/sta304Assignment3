@@ -36,10 +36,10 @@ library(popbio)
 
 ```{r load data cc, eval=TRUE, include=FALSE}
 # Load the data dictionary and the raw data and correct the variable names
-raw_data <- read_csv("/Users/jingxihuang/Downloads/304_PS3/AAgNMGFq.csv")
-dict <- read_lines("/Users/jingxihuang/Downloads/304_PS3/gss_dict.txt", skip = 18) 
+raw_data <- read_csv("AAMLrYO8.csv")
+dict <- read_lines("gss_dict.txt", skip = 18) 
 # Now we need the labels because these are the actual responses that we need
-labels_raw <- read_file("/Users/jingxihuang/Downloads/304_PS3/gss_labels.txt")
+labels_raw <- read_file("gss_labels.txt")
 ```
 
 ```{r dict prep, include=FALSE}
@@ -369,7 +369,7 @@ Data quality is essentially the foundation of performing any future statistical 
 
 ###	2.1.7 Weight Adjustment 
 
-Weight adjustments are necessary when units are sampled with unequal probability (Lumley,2004) so that population estimates are consistent with the corresponding projected population counts. For instance, male respondents between 15 to 24 years old account for 3.7% of the sample while 7.5% population are males who are between 15 to 24 years old. Therefore, It is clear that the unweighted sample is not representative of the population we are looking at. With that said, several adjustments are made under the 2017 GSS study. First, given that GSS utilized stratification method and differences exist among strata, a stratum adjustment is introduced by adjusting the person weights for records within each geographic stratum. Moreover, the GSS also incorporates a province–age-sex adjustment to make sure the person weights match the projected province–age-sex distribution. Detailed formulas regarding the adjustments are beyond this report's scope and thus are included in the appendix A. 
+Weight adjustments are necessary when units are sampled with unequal probability (Lumley,2004) so that population estimates are consistent with the corresponding projected population counts. For instance, male respondents between 15 to 24 years old account for 3.7% of the sample while 7.5% population are males who are between 15 to 24 years old. Therefore, It is clear that the unweighted sample is not representative of the population we are looking at. With that said, several adjustments are made under the 2017 GSS study. First, given that GSS utilized stratification method and differences exist among strata, a stratum adjustment is introduced by adjusting the person weights for records within each geographic stratum. Moreover, the GSS also incorporates a province–age-sex adjustment to make sure the person weights match the projected province–age-sex distribution. Detailed formulas regarding the adjustments are beyond this report's scope and thus are included in the appendix. 
 
 ## 2.2.2 Detailed data analysis
 1. Age \newline
@@ -467,7 +467,7 @@ where the $\beta's$ are age-group, education, region of residence, personal inco
 
 ## 3.3 Model Construction and Survey Design of the 2017 GSS
 
-Given that the 2017 GSS study was conducted under a two-stage sampling method involving stratification and simple random sampling without replacement, we modified our model construction accordingly. As discussed in the previous section, each stratum is designed under geographical consideration under the 2017 GSS study. The majority of densely inhabited Census Metropolitan Areas (CMAs) are each treated as a different stratum. The non-CMA areas of each of the ten provinces further formed ten strata. As a result, twenty-seven strata are created in total. To reflect such a stratification, we utilized the survey package to make our model consistent with the GSS study. However, we instead only introduced ten strata; each represents an individual province because the original data set does not contain a variable that links each observation with the stratum it belongs. With that said, our model might not entirely reflect the survey method of the GSS study, but it is our best try with the data set we currently have in hand. To address that, we manually computed the population figures in 27 strata ( Appendix B) based on the information available on the official website of Statistic Canada, hoping that we can find a way to use them as a benchmark to correct our stratification methods incorporated in the model in future studies. 
+Given that the 2017 GSS study was conducted under a two-stage sampling method involving stratification and simple random sampling without replacement, we modified our model construction accordingly. As discussed in the previous section, each stratum is designed under geographical consideration under the 2017 GSS study. The majority of densely inhabited Census Metropolitan Areas (CMAs) are each treated as a different stratum. The non-CMA areas of each of the ten provinces further formed ten strata. As a result, twenty-seven strata are created in total. To reflect such a stratification, we utilized the survey package to make our model consistent with the GSS study. However, we instead only introduced ten strata; each represents an individual province because the original data set does not contain a variable that links each observation with the stratum it belongs. With that said, our model might not entirely reflect the survey method of the GSS study, but it is our best try with the data set we currently have in hand. To address that, we manually computed the population figures in 27 strata (see Appendix) based on the information available on the official website of Statistic Canada, hoping that we can find a way to use them as a benchmark to correct our stratification methods incorporated in the model in future studies. 
 
 ## 3.4 Modelling Software
 Analysis was conducted in R (R Core Team, 2019) and our logistic regression model were produced using the built-in function svyglm in R.
@@ -555,7 +555,7 @@ svylogit1 <- svyglm(children_intention ~ place_birth_province + region + ageC + 
 summary(svylogit1) 
 ``` 
 
-###4.1 Interpreting Logsitic Results
+### 4.1 Interpreting Logsitic Results
 
 ```{r glm coeff table, echo=FALSE,fig.cap= 'coefficient table for gernalized lienar model'}
 # we could create tables of our estimated coefficients of the regression model,
@@ -587,15 +587,15 @@ Last, for the respondents that have different educational backgrounds, the odds 
 
 ## 4.2 Model Checks and Diagnostic Issues
 
-#### Logistic Regression Model in General
+#### 4.2.1 Logistic Regression Model in General
 The expressiveness of the logistic regression model is restricted, since its pre-assumption separates the outcome variable (i.e. respondents’ intention to childbearing) into completely two levels. While in real life circumstances, the partial population does hold an absolute attitude on entering parenthood sometimes in life. Logistic regression shares its pros and cons, it provides probabilities of the individual will have children, which makes the model more informative compared to other classification models.
 
-#### Convergence in Logistic Regression
+#### 4.2.2 Convergence in Logistic Regression
 
 Likelihood maximization algorithm to converge would fail for estimating logistic regression model, which is indicated with non-existence under our context (Allison, 2008).
 
 
-#### Cross Validation
+#### 4.2.3 Cross Validation
 ```{r cross validation, include=FALSE}
 # =========== Cross Validation ============
 # In order to access the ability of our model in predicting outcome variable
@@ -638,7 +638,7 @@ knitr::kable(table(training$children_intention, PredTrain > 0.5),
 
 For the purpose of evaluating our logistic regression model on fertile intention, one of the most common ways is to assess its accuracy in predicting the outcome variable under different subsets of population data. The technique performed is K-fold cross validation, with partitioning the current survey dataset into equally sized subsets. For evaluating the existing logistic regression model, we conducted a repeated five-fold cross validation. One subset data (i.e. fold) would be selected as testing set, while our logistic regression would run through the remaining folds to provide a prediction of the testing data. The testing-and-training process is repeated for five times. The predicted outcomes were tracked and were compared with the testing sets with known true outcomes. The model’s performances on each repeated trial are shown through a table defined as a confusion matrix. As shown in the confusion matrix above, the accuracy of the model’s prediction on the respondents’ attitude towards whether children will have is 80%, which proves the predicting power of our logistic regression model.
 
-#### Linearity of Quantitative Variable in Logistic Model
+#### 4.2.4 Linearity of Quantitative Variable in Logistic Model
 
 ```{r log linearity, echo=FALSE, fig.cap='Linearly Association of Age and Fertile Intention Outcome (in logit scale).',fig.height = 4, fig.width = 4, fig.align = "center"}
 # record the prediction generated by our model
@@ -661,7 +661,7 @@ ggplot(linearity_data, aes(logit, predictor.value)) +
 
 To assess the linearity between our only numeric variable, age of the respondents, and the dependent  variable of fertility intention, we drew a scatter plot to further visualize the situation. According to the plot above, we can see that most of the scatters form a approximately linear trend, suggesting that the assumption of a linearity between the continuous covariate and the log odds of the outcome variable was satisfied in our model.
 
-####  Multicolinearity Issues
+#### 4.2.5 Multicolinearity Issues
 
 ```{r VIF, eval=FALSE,include=FALSE}
 car::vif(svylogit1)
@@ -685,11 +685,11 @@ According to the regression, respondents who reside in the Atlantic region (a re
 
 ## 5.3 Fertility and Age
 In our regression model, the younger the respondent is, the more likely that he or she expresses a fertility intention. Such a finding is not surprising, as a mass of online articles have indicated that the fertility rate is negatively affected by age (American College of Obstetricians and Gynecologists, 2014). However, we are not advising aged people to consider entering into parenthood or have additional children. In fact, we do recommend the opposite: the government should put more effort into influencing young people's birth-giving decision. According to a study conducted by Mikko Myrskyla and Andrew Fenelon, offspring born to mothers over 35 years old have worse outcomes in terms of mortality, height, obesity, the number of diagnosed conditions compared to that born to mothers aged between 25 to 34 years old (Myrskylä & Fenelon, 2012).
-## 5.5 Fertility and Gender
+## 5.4 Fertility and Gender
 
 Scholars have proposed that solving the low fertility rate requires paying attention to women’s altitude (Golmakani, Fazeli, Taghipour, & Shakeri, 2015), which is consistent with our regression result. In our regression model, we discovered that males are more likely to express a fertility intention than females. Such a finding is what we expected before conducting the regression. Believe it or not, gender stereotypes still exist. In some cultures, people still consider that the responsibilities and duties of the family, including taking care of the baby, fall onto females. In contrast, males take on more professional responsibilities. With that in mind, females need to consider more factors when deciding whether to enter into parenthood. For instance, they might need to sacrifice work time to the family and to the baby. Moreover, previous studies have shown that women are less likely to progress than male colleagues after childbirth (Smith, 2019). As a result, males are more likely to have a fertility intention as they do not need to worry about such things.
 
-## 5.6 Fertility and Education
+## 5.5 Fertility and Education
 
 A Popular view has been that the fertility rate tends to decrease as the education level increases (Nairobi, Seoul and Torodi, 2019). However, we have seen a reverse relationship between fertility intention and education in our regression model. Specifically, people with a higher school diploma or less tend to express a lower fertility intention while the fertility intention is the strongest for people who hold a university degree or above. Such a finding is interesting, as it suggests that, after controlling age, income, gender, birthplace and region of residence, the fertility rate tends to move in the same direction as the education level, which seems contrary to the prevailing view. However, the prevailing view is derived from a global context, but our analysis has a geographical focus on Canada. Thus, the discrepancy is no longer a big surprise. Specifically, when extending the focus to a global context, researchers counter outliers that could potentially mess up the real relationship that in interest. For instance, an average woman in Niger, an impoverished country where the education system is not available, has seven children (Nairobi, Seoul and Torodi, 2019). By contrast, people in developed nations are generally educated and give birth to a more reasonable number of children. Therefore, countries like Niger can coercively turn the relationship between fertility rate and the education level into positive. With that in mind, given that our analysis has a geographic scope of Canada, our result is not contrary to the prevailing view. In fact, the topic of fertility and education is an interesting social study topic which all analysts found worth further investigation. Thus, we will conduct future studies that extensively focus on the relationship between fertility intention and education.
 
@@ -697,16 +697,14 @@ A Popular view has been that the fertility rate tends to decrease as the educati
 
 We have discovered that fertility intention tends to increase with education level but decrease with income and age, after controlling other factors. Moreover, people's birthplace and region of residence also shape their fertility intentions. However, it is impossible to offer a uniform suggestion across all areas about boosting fertility intention because each province has its unique cause of low ertility intention. For instance, Yukon, Northwest Territories and Nunavut have suffered a low birth rate highly because of their poor local economies. That said, local government in these three territories might have to boost the economic prosperity before addressing the low fertility rate. Moreover, We have learned that Quebec's family-friendly policy indeed has a positive effect on influencing people entering into parenthood. Therefore, other provincial governments might need to adopt such a system. However, how to choose the target audience of these policies in each province brings further headaches. Unfortunately, there isn't a single formula to copy and paste for local governments. For instance, we discovered that the aboriginal people living in British Columbia have already exhibited strong fertility intentions by conducting online research. Therefore, the provincial government in British Columbia should make its policies more appealing to the non-aboriginal population. 
 
-Although, we have seen that, according to our model, fertility intention is associated with other individual characteristics of the respondents. The underlying relationships we discovered may not be 100% correct. First, we conducted our analysis based on the data set of the 2017 GSS study. Therefore, the accuracy of the original data source significantly influences our model results. Unfortunately, the GSS study utilized an imputed data method to void missing values appear for critical variables, a method that we have discussed in detail previously. With that in mind, it is possible that some of the values we incorporated in our model are imputed and may not reflect the real situation of some respondents. If that is the case, the validity of relationships that we have discovered is open to doubt. Second, we did not follow the stratification specified in the GSS study when constructing our logistic model because there isn't a variable that allows us to correctly link those 27 strata with each respondent. Therefore, we have tried our best to instead use ten provinces as ten strata. Although such modification will not impact the variable's coefficients, it influences standard errors in our model. As a result, our confidence interval estimation might not be accurate enough. Though unachievable with the data set that we currently have in hand, we still manually compute the population figures within each of the 27 strata according to the official website of Statistic Canada (see in Appendix), hoping that we can revise our model construction in the future. 
+Although, we have seen that, according to our model, fertility intention is associated with other individual characteristics of the respondents. The underlying relationships we discovered may not be 100% correct. First, we conducted our analysis based on the data set of the 2017 GSS study. Therefore, the accuracy of the original data source significantly influences our model results. Unfortunately, the GSS study utilized an imputed data method to void missing values appear for critical variables, a method that we have discussed in detail previously. With that in mind, it is possible that some of the values we incorporated in our model are imputed and may not reflect the real situation of some respondents. If that is the case, the validity of relationships that we have discovered is open to doubt. Second, we did not follow the stratification specified in the GSS study when constructing our logistic model because there isn't a variable that allows us to correctly link those 27 strata with each respondent. Therefore, we have tried our best to instead use ten provinces as ten strata. Although such modification will not impact the variable's coefficients, it influences standard errors in our model. As a result, our confidence interval estimation might not be accurate enough. Though unachievable with the data set that we currently have in hand, we still manually compute the population figures within each of the 27 strata according to the official website of Statistic Canada (see Appendix), hoping that we can revise our model construction in the future. 
 
-# 7.Acknowledgement
+# 7. Acknowledgement
 Special thanks to Professor Rohan Alexandar at University of Toronto,for we have used part of his code to do the analysis.
 
 
 # 8. References
 
-- (n.d.). Retrieved October 16, 2020, from https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710013501
-- (PDF) Convergence Failures in Logistic Regression. (n.d.). Retrieved October 18, 2020, from https://www.researchgate.net/publication/228813245_Convergence_Failures_in_Logistic_Regression
 - American College of Obstetricians and Gynecologists. (2014, March). Female Age-Related Fertility Decline. Retrieved October 17, 2020, from https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2014/03/female-age-related-fertility-decline
 - Assumptions of Logistic Regression. (n.d.). Retrieved October 16, 2020, from https://www.statisticssolutions.com/assumptions-of-logistic-regression/
 - Atmathew. (2015, August 18). Evaluating Logistic Regression Models. Retrieved October 16, 2020, from https://www.r-bloggers.com/2015/08/evaluating-logistic-regression-models/
@@ -741,12 +739,24 @@ Special thanks to Professor Rohan Alexandar at University of Toronto,for we have
 - Weikle, B. (2020, August 03). The COVID-19 pandemic is expected to lower the birth rate. Here's why that matters | CBC News. Retrieved October 14, 2020, from https://www.cbc.ca/news/health/covid-19-birthrate-1.5670539
 - Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
 - Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
+- (n.d.). Retrieved October 16, 2020, from https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710013501
+- (PDF) Convergence Failures in Logistic Regression. (n.d.). Retrieved October 18, 2020, from https://www.researchgate.net/publication/228813245_Convergence_Failures_in_Logistic_Regression
 
 
-# Appendix
+# 9. Appendix
 
 Full code and data supporting this analysis is available at:
-https://github.com/DuoyiJoy/sta304Assignment3
+https://github.com/DuoyiJoy/sta304Assignment3 \newline
+
+Twenty-seven Strata:
+
+```{r 27, echo=FALSE, out.width="50%"}
+knitr::include_graphics(c("/Users/jingxihuang/1.png",
+                          "/Users/jingxihuang/2.png",
+                          "/Users/jingxihuang/3.png"
+                          ))
+```
+
 
 Appendix A
 $$ Stratum Adjustment=\frac{Projected\:Population\:Count\:for\:the\:Stratum\:}{Sum\:of\:the\:Person\:Weights\:for\:the\:Stratum}$$
