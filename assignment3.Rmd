@@ -751,9 +751,9 @@ https://github.com/DuoyiJoy/sta304Assignment3 \newline
 Twenty-seven Strata:
 
 ```{r 27, echo=FALSE, out.width="50%"}
-knitr::include_graphics(c("/Users/jingxihuang/1.png",
-                          "/Users/jingxihuang/2.png",
-                          "/Users/jingxihuang/3.png"
+knitr::include_graphics(c("1.png",
+                          "2.png",
+                          "3.png"
                           ))
 ```
 
