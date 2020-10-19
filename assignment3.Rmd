@@ -1,6 +1,6 @@
 ---
 title: "Individual Characteristics and Geographic Background Shape Fertility Rate"
-author: "Group 43"
+author: "Jingxi Huang,Jinghan Yang,Shijia Yu,Duoyi Zhang"
 date: "16/10/2020"
 output:
   pdf_document: default
